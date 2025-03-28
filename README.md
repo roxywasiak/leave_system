@@ -31,7 +31,7 @@ The Leave Booking System API is a prototype designed to manage employee leave re
 4. Run the server.
 
 ## Future Work
-Development of a front end to utilize this API.
+Development of a front end to utilise this API.
 Additional features such as HR approval, manager alerts, and staff alerts.
 
 ## License
