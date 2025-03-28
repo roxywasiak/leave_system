@@ -4,7 +4,18 @@
   "description": "The Leave Booking System API is a prototype designed to manage employee leave requests. This RESTful API allows staff, managers, and admins to handle various leave-related actions. Future work will include developing a front end to utilise this API.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "build": "tsc",
+  "lint": "eslint .",
+  "lint:fix": "eslint . --fix",
+  "prettier": "prettier --write .",
+  "prettier:check": "prettier --check .",
+  "format": "npm run prettier && npm run lint:fix",
+  "test:unit": "jest --config jest.config.js",
+  "start": "node dist/server.js",
+  "dev": "nodemon src/server.ts",
+  "check-port": "netstat -ano | findstr :5000",
+  "stop-port": "for /f \"tokens=5\" %a in ('netstat -ano ^| findstr :5000') do taskkill /PID %a /F"
   },
   "repository": {
     "type": "git",
