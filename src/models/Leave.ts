@@ -18,14 +18,7 @@ export class Leave {
         this.status = status;
         this.reason = reason;
     }
-    static async createLeaveRequest(leaveRequest: Leave) {
-        const query = `
-            INSERT INTO leave_requests (user_id, start_date, end_date, reason, status)
-            VALUES (?, ?, ?, ?, ?)
-        `;
-        const [result] = await pool.execute(query, [leaveRequest.userId, leaveRequest.startDate, leaveRequest.endDate, leaveRequest.reason, leaveRequest.status]);
-        return result;
-    }
+    
     static async getAllLeaveRequests() {
         const query = `
             SELECT * FROM leave_requests
