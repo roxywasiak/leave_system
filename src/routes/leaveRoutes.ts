@@ -3,20 +3,18 @@ import { Leave } from "../models/Leave";
 
 const router = express.Router();
 
-// Route to create a new leave request
 router.post("/leave-request", async (req, res) => {
-    const { user_id, start_date, end_date, reason, status } = req.body;
+    const { userId, startDate, endDate, reason, status } = req.body;
 
     try {
-        const leaveRequest =   ({ userId, startDate, endDate, reason, status });
-        const result = await leaveRequest.createLeaveRequest(leaveRequest);
+        const leaveRequest = new Leave({ userId, startDate, endDate, reason, status });
+        const result = await Leave.create(leaveRequest);
         res.status(201).json({ message: "Leave request created successfully", result });
     } catch (error) {
         res.status(500).json({ message: "Failed to create leave request", error });
     }
 });
 
-// Route to get all leave requests
 router.get("/leave-requests", async (req, res) => {
     try {
         const leaveRequests = await Leave.getAllLeaveRequests();
