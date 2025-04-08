@@ -18,6 +18,17 @@ export class Leave {
         this.status = status;
         this.reason = reason;
     }
+
+    static async create(leaveRequest: Leave): Promise<Leave> {
+        const query = `
+            INSERT INTO leave_requests (user_id, leave_type_id, start_date, end_date, reason, status)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+        const params = [leaveRequest.userId, leaveRequest.leaveTypeId, leaveRequest.startDate, leaveRequest.endDate, leaveRequest.reason, leaveRequest.status];
+        return new Promise((resolve) => {
+            setTimeout(() => resolve(leaveRequest), 100);
+        });
+    }
     
     static async getAllLeaveRequests() {
         const query = `
