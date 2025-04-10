@@ -9,4 +9,12 @@ export const getAllLeaveRequests = async (req: Request, res: Response) => {
     console.error("Error fetching leave requests:", err);
     res.status(500).json({ message: "Failed to fetch leave requests" });
   }
+
 };
+
+export const requestLeave = async (req: Request, res: Response) => { ... };
+export const cancelLeave = async (req: Request, res: Response) => { ... };
+export const approveLeave = async (req: Request, res: Response) => { ... };
+export const rejectLeave = async (req: Request, res: Response) => { ... };
+export const getUserLeaveStatus = async (req: Request, res: Response) => { ... };
+export const getRemainingLeave = async (req: Request, res: Response) => { ... };
