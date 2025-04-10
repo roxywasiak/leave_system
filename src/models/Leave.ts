@@ -24,10 +24,27 @@ export class Leave {
             INSERT INTO leave_requests (user_id, leave_type_id, start_date, end_date, reason, status)
             VALUES (?, ?, ?, ?, ?, ?)
         `;
-        const params = [leaveRequest.userId, leaveRequest.leaveTypeId, leaveRequest.startDate, leaveRequest.endDate, leaveRequest.reason, leaveRequest.status];
-        return new Promise((resolve) => {
-            setTimeout(() => resolve(leaveRequest), 100);
-        });
+        const params = [
+            leaveRequest.userId,
+            leaveRequest.leaveTypeId,
+            leaveRequest.startDate.toISOString(),
+            leaveRequest.endDate.toISOString(),
+            leaveRequest.reason,
+            leaveRequest.status
+        ];
+        const [result] = await pool.execute(query, params);
+        const insertedId = (result as any).insertId;
+
+        return new Leave(
+            insertedId,
+            leaveRequest.userId,
+            leaveRequest.leaveTypeId,
+            leaveRequest.startDate,
+            leaveRequest.endDate,
+            leaveRequest.status,
+            leaveRequest.reason
+        );
+       
     }
     
     static async getAllLeaveRequests() {
