@@ -54,5 +54,53 @@ export class Leave {
         const [rows] = await pool.execute(query);
         return rows;
     }
+
+    static async cancelLeave(leaveId: number): Promise<any> {
+        const query = `UPDATE leave_requests SET status = 'Cancelled' WHERE id = ?`;
+        const [result] = await pool.execute(query, [leaveId]);
+        return result
 }
+
+    static async updateLeaveStatus(leaveId: number, status: string, reason: string): Promise<any> {
+    const query = `
+      UPDATE leave_requests
+      SET status = ?, reason = ?
+      WHERE id = ?
+    `;
+    const [result] = await pool.execute(query, [status, reason, leaveId]);
+    return result;
+  }
+
+    static async getLeaveRequestsByUserId(userId: number): Promise<any> {
+    const query = `SELECT * FROM leave_requests WHERE user_id = ?`;
+    const [rows] = await pool.execute(query, [userId]);
+    return rows;
+  }
+  static async getRemainingLeaveDays(userId: number): Promise<number> {
+    const [[user]]: any = await pool.execute(
+      `SELECT annual_leave_balance FROM users WHERE id = ?`,
+      [userId]
+    );
+
+    if (!user) throw new Error("User not found");
+
+    const [rows]: any = await pool.execute(
+      `SELECT start_date, end_date FROM leave_requests WHERE user_id = ? AND status = 'Approved'`,
+      [userId]
+    );
+
+    let usedDays = 0;
+    for (const leave of rows) {
+      const start = new Date(leave.start_date);
+      const end = new Date(leave.end_date);
+      const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+      usedDays += days;
+    }
+
+    return user.annual_leave_balance - usedDays;
+  }
+}
+
+
+
 
