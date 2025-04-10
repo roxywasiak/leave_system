@@ -2,8 +2,18 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import pool from "../config/db";
+import { authoriseRoles } from "../middleware/roleMiddleware";
+import { verifyToken } from "../middleware/authMiddleware";
+import { approveLeave } from "../controllers/leaveController";
 
 const router = express.Router();
+
+router.patch(
+  "/leave-requests/approve",
+  verifyToken,
+  authoriseRoles("manager", "admin"), 
+  approveLeave
+);
 
 router.post("/register", async (req, res) => {
   const { email, password, department } = req.body;
