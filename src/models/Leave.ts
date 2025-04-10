@@ -10,7 +10,7 @@ export class Leave {
     reason: string;
 
     constructor(id: number, userId: number, leaveTypeId: number, startDate: Date, endDate: Date, status: string, reason: string) {
-        this.id = id;
+        this.id = id || 0;
         this.userId = userId;
         this.leaveTypeId = leaveTypeId;
         this.startDate = startDate;

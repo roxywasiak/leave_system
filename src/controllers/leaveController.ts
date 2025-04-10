@@ -20,7 +20,7 @@ export const requestLeave = async (req: Request, res: Response) => {
   }
 
   try {
-    const newLeave = new Leave(userId, leaveTypeId, new Date(startDate), new Date(endDate), "Pending", reason, null);
+    const newLeave = new Leave(0, userId, leaveTypeId, new Date(startDate), new Date(endDate), "Pending", reason);
     const createdLeave = await Leave.create(newLeave);
 
     res.status(201).json({ message: "Leave request submitted", data: createdLeave });
