@@ -1,41 +1,53 @@
-import pool from "../config/db";     
+
+import pool from "../config/db";
 
 export class User {
-    id?: number;
-    email: string;
-    password: string;
-    department: string;
-    interests: string;
-    availability: string;
-    notifications: boolean;
+  userId?: number;
+  firstName: string;
+  surname: string;
+  email: string;
+  passwordHash: string;
+  salt: string;
+  role: "employee" | "manager" | "admin";
+  annualLeaveBalance: number;
 
-    constructor(
-      email: string,
-      password: string,
-      department: string,
-      interests: string,
-      availability: string,
-      notifications: boolean,
-      id?: number
-    ) {
-      this.id = id;
-      this.email = email;
-      this.password = password;
-      this.department = department;
-      this.interests = interests;
-      this.availability = availability;
-      this.notifications = notifications;
-    }
-
-    static async create(user: User): Promise<User> {
-      const [result] = await pool.execute(
-        `INSERT INTO users (email, password, department, interests, availability, notifications)
-         VALUES (?, ?, ?, ?, ?, ?)`,
-        [user.email, user.password, user.department, user.interests, user.availability, user.notifications]
-      );
-  
-      user.id = (result as any).insertId;
-      return user;
-    }
+  constructor(
+    firstName: string,
+    surname: string,
+    email: string,
+    passwordHash: string,
+    salt: string,
+    role: "employee" | "manager" | "admin" = "employee",
+    annualLeaveBalance: number = 25,
+    userId?: number
+  ) {
+    this.userId = userId;
+    this.firstName = firstName;
+    this.surname = surname;
+    this.email = email;
+    this.passwordHash = passwordHash;
+    this.salt = salt;
+    this.role = role;
+    this.annualLeaveBalance = annualLeaveBalance;
   }
+
+  static async create(user: User): Promise<User> {
+    const [result] = await pool.execute(
+      `INSERT INTO user (firstName, surname, email, passwordHash, salt, role, annualLeaveBalance)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [
+        user.firstName,
+        user.surname,
+        user.email,
+        user.passwordHash,
+        user.salt,
+        user.role,
+        user.annualLeaveBalance
+      ]
+    );
+
+    user.userId = (result as any).insertId;
+    return user;
+  }
+}
   
