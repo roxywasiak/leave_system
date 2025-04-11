@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import pool from "../config/db";
+import { User } from "../models/User";
 
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
@@ -11,26 +11,16 @@ export const login = async (req: Request, res: Response) => {
   }
 
   try {
-    // get user email
-    const [rows]: any = await pool.execute(
-      "SELECT * FROM user WHERE email = ?",
-      [email]
-    );
+    const user = await User.findByEmail(email);
 
-    if (rows.length === 0) {
+    if (!user) {
       return res.status(401).json({ message: "Invalid email or password." });
     }
-
-    const user = rows[0];
-
-    //  Retrieve stored salt and hash
-    const { salt, passwordHash } = user;
-
     //  Re-hash the entered password using stored salt
-    const hashedInputPassword = await bcrypt.hash(password, salt);
+    const hashedInputPassword = await bcrypt.hash(password, user.salt);
 
     //  Compare with stored hash
-    const isMatch = hashedInputPassword === passwordHash;
+    const isMatch = hashedInputPassword === user.passwordHash;
 
     if (!isMatch) {
       return res.status(401).json({ message: "Invalid email or password." });

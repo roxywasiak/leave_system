@@ -49,5 +49,22 @@ export class User {
     user.userId = (result as any).insertId;
     return user;
   }
+  
+  static async findByEmail(email: string): Promise<User | null> {
+    const [rows]: any = await pool.execute("SELECT * FROM user WHERE email = ?", [email]);
+    if (rows.length === 0) return null;
+    const row = rows[0];
+
+    return new User(
+      row.firstName,
+      row.surname,
+      row.email,
+      row.passwordHash,
+      row.salt,
+      row.role,
+      row.annualLeaveBalance,
+      row.userId
+    );
+  }
 }
   
