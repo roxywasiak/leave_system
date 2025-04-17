@@ -14,11 +14,11 @@ app.use(helmet());
 app.use("/api/auth", authRoutes);
 app.use("/api/leave", leaveRoutes);
 
-app.get("/", (req: Request, res: Response): void => {
+app.get("/", (_req: Request, res: Response): void => {
   res.send("Leave System API is running...");
 });
 
-app.get("/api/test-db", async (req: Request, res: Response): Promise<void> => {
+app.get("/api/test-db", async (_req: Request, res: Response): Promise<void> => {
   try {
     const [rows] = await pool.query("SELECT NOW()");
     res.json({ success: true, time: (rows as any)[0]["NOW()"] });
