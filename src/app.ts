@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import authRoutes from "./routes/authRoutes";
@@ -9,17 +9,16 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(helmet())
+app.use(helmet());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/leave", leaveRoutes);
 
-
-app.get("/", (req, res) => {
+app.get("/", (req: Request, res: Response): void => {
   res.send("Leave System API is running...");
 });
 
-app.get("/api/test-db", async (req, res) => {
+app.get("/api/test-db", async (req: Request, res: Response): Promise<void> => {
   try {
     const [rows] = await pool.query("SELECT NOW()");
     res.json({ success: true, time: (rows as any)[0]["NOW()"] });
@@ -30,4 +29,5 @@ app.get("/api/test-db", async (req, res) => {
 });
 
 export default app;
+
 
