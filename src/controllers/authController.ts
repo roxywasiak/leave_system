@@ -1,46 +1,46 @@
-import { Request, Response } from "express";
+import { Request, RequestHandler, Response } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { User } from "../models/User";
 
-export const Login = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+export const login: RequestHandler = async (req: Request, res: Response) => {
+  interface LoginRequestBody {
+    email: string;
+    password: string;
+  }
+
+  const { email, password } = req.body as LoginRequestBody;
 
   if (!email || !password) {
-   res.status(400).json({ message: "Email and password are required." });
-   return;
+     res.status(400).json({ message: "Email and password are required." });
+     return;
   }
 
   try {
     const user = await User.findByEmail(email);
 
     if (!user) {
-      res.status(401).json({ message: "Invalid email or password." });
-      return
+     res.status(401).json({ message: "Invalid email or password." });
+      return;
     }
-    //  Re-hash the entered password using stored salt
-    const hashedInputPassword = await bcrypt.hash(password, user.salt);
-
-    //  Compare with stored hash
-    const isMatch = hashedInputPassword === user.passwordHash;
+//comparison of the pw to the hashed one in db
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
 
     if (!isMatch) {
-       res.status(401).json({ message: "Invalid email or password." });
-       return
+      res.status(401).json({ message: "Invalid email or password." });
+      return;
     }
 
-    //  Make the JWT token
     const token = jwt.sign(
       {
         userId: user.userId,
         email: user.email,
-        role: user.role
+        role: user.role,
       },
       process.env.JWT_SECRET || "secret",
-      { expiresIn: "1h" }
+      { expiresIn: "1h" } 
     );
 
-    // Respond with token
     res.status(200).json({
       message: "Login successful",
       token,
@@ -49,64 +49,57 @@ export const Login = async (req: Request, res: Response) => {
         email: user.email,
         role: user.role,
         firstName: user.firstName,
-        surname: user.surname
-      }
-    });
+        surname: user.surname,
+      },
+    }
+    );
 
   } catch (err) {
     console.error("Login error:", err);
     res.status(500).json({ message: "Internal server error" });
   }
-
 };
 
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    const { email, password, department, firstName, surname } = req.body;
 
     if (!email || !password) {
       res.status(400).json({ message: "Email and password are required." });
       return;
     }
 
-    const user = await User.findByEmail(email);
-    if (!user) {
-      res.status(401).json({ message: "Invalid email or password." });
+    const existingUser = await User.findByEmail(email);
+    if (existingUser) {
+      res.status(400).json({ message: "Email already in use." });
       return;
     }
 
-    const hashedInputPassword = await bcrypt.hash(password, user.salt);
-    const isMatch = hashedInputPassword === user.passwordHash;
+    const salt = await bcrypt.genSalt(10); 
 
-    if (!isMatch) {
-      res.status(401).json({ message: "Invalid email or password." });
-      return;
-    }
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    const token = jwt.sign(
-      {
-        userId: user.userId,
-        email: user.email,
-        role: user.role
-      },
-      process.env.JWT_SECRET || "secret",
-      { expiresIn: "1h" }
-    );
+    const newUser = new User(email, hashedPassword, department, firstName, surname);
 
-    res.status(200).json({
-      message: "Login successful",
-      token,
+    const result = await User.create(newUser);
+
+    res.status(201).json({
+      message: "User registered successfully",
       user: {
-        userId: user.userId,
-        email: user.email,
-        role: user.role,
-        firstName: user.firstName,
-        surname: user.surname
-      }
+        userId: result.userId,
+        email: result.email,
+        role: result.role,
+        firstName: result.firstName,
+        surname: result.surname,
+      },
     });
+
   } catch (err) {
-    console.error("Login error:", err);
+    console.error("Registration error:", err);
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
+
+
 
