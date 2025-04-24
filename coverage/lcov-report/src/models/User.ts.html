@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">27.77% </span>
+                <span class="strong">77.77% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>5/18</span>
+                <span class='fraction'>14/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">23.52% </span>
+                <span class="strong">76.47% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>4/17</span>
+                <span class='fraction'>13/17</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line medium'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -155,18 +155,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -214,28 +214,28 @@ export class User {
   role: "employee" | "manager" | "admin";
   annualLeaveBalance: number;
 &nbsp;
-<span class="fstat-no" title="function not covered" >  constructor(</span>
+  constructor(
     firstName: string,
     surname: string,
     email: string,
     passwordHash: string,
     salt: string,
-    role: "employee" | "manager" | "admin" = <span class="branch-0 cbranch-no" title="branch not covered" >"employee",</span>
-    annualLeaveBalance: number = <span class="branch-0 cbranch-no" title="branch not covered" >25,</span>
+    role: "employee" | "manager" | "admin" = "employee",
+    annualLeaveBalance: number = 25,
     userId?: number
   ) {
-<span class="cstat-no" title="statement not covered" >    this.userId = userId;</span>
-<span class="cstat-no" title="statement not covered" >    this.firstName = firstName;</span>
-<span class="cstat-no" title="statement not covered" >    this.surname = surname;</span>
-<span class="cstat-no" title="statement not covered" >    this.email = email;</span>
-<span class="cstat-no" title="statement not covered" >    this.passwordHash = passwordHash;</span>
-<span class="cstat-no" title="statement not covered" >    this.salt = salt;</span>
-<span class="cstat-no" title="statement not covered" >    this.role = role;</span>
-<span class="cstat-no" title="statement not covered" >    this.annualLeaveBalance = annualLeaveBalance;</span>
+    this.userId = userId;
+    this.firstName = firstName;
+    this.surname = surname;
+    this.email = email;
+    this.passwordHash = passwordHash;
+    this.salt = salt;
+    this.role = role;
+    this.annualLeaveBalance = annualLeaveBalance;
   }
 &nbsp;
-<span class="fstat-no" title="function not covered" >  static </span>async create(user: User): Promise&lt;User&gt; {
-    const [result] = <span class="cstat-no" title="statement not covered" >await pool.execute(</span>
+  static async create(user: User): Promise&lt;User&gt; {
+    const [result] = await pool.execute(
       `INSERT INTO user (firstName, surname, email, passwordHash, salt, role, annualLeaveBalance)
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [
@@ -277,7 +277,7 @@ export class User {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-24T10:35:16.347Z
+                at 2025-04-24T12:01:20.399Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
