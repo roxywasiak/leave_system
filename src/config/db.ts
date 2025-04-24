@@ -1,10 +1,10 @@
-import mysql from "mysql2/promise";
 import dotenv from "dotenv";
+import mysql from "mysql2/promise";
 
 dotenv.config();
 
-console.log('DB_USER:', process.env.DB_USER);  // Should print your MySQL username
-console.log('DB_PASSWORD:', process.env.DB_PASSWORD);  // Should print your MySQL password
+console.log('DB_USER:', process.env.DB_USER);  
+console.log('DB_PASSWORD:', process.env.DB_PASSWORD);  
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
