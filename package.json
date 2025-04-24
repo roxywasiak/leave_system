@@ -4,7 +4,7 @@
   "description": "The Leave Booking System API is a prototype designed to manage employee leave requests. This RESTful API allows staff, managers, and admins to handle various leave-related actions. Future work will include developing a front end to utilise this API.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --config jest.config.js",
     "build": "tsc",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

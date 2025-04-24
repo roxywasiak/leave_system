@@ -9,6 +9,7 @@ describe('Leave Routes', () => {
       startDate: '2023-12-01',
       endDate: '2023-12-05',
       reason: 'Vacation',
+      status: 'pending'
     });
 
     expect(response.status).toBe(201);

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25.42% </span>
+                <span class="strong">22.72% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/59</span>
+                <span class='fraction'>15/66</span>
             </div>
         
             
@@ -39,7 +39,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/7</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
@@ -228,7 +228,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Request, Response } from "express";
 import { Leave } from "../models/Leave";
 &nbsp;
-export const getAllLeaveRequests = <span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {
+export const getAllLeaveRequests = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request, res: Response) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {</span></span>
 <span class="cstat-no" title="statement not covered" >  try {</span>
     const leaves = <span class="cstat-no" title="statement not covered" >await Leave.getAllLeaveRequests();</span>
 <span class="cstat-no" title="statement not covered" >    res.status(200).json(leaves);</span>
@@ -239,7 +239,7 @@ export const getAllLeaveRequests = <span class="fstat-no" title="function not co
 &nbsp;
 };
 &nbsp;
-export const requestLeave = <span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; { 
+export const requestLeave = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request, res: Response) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > { </span></span>
   const { userId, leaveTypeId, startDate, endDate, reason } = <span class="cstat-no" title="statement not covered" >req.body;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (!userId || !leaveTypeId || !startDate || !endDate) {</span>
@@ -257,7 +257,7 @@ export const requestLeave = <span class="fstat-no" title="function not covered" 
   }
  };
 &nbsp;
-export const cancelLeave = <span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {const { leaveId } = <span class="cstat-no" title="statement not covered" >req.params;</span>
+export const cancelLeave = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request, res: Response) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {c</span>onst { leaveId } = <span class="cstat-no" title="statement not covered" >req.params;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >try {</span>
   const result = <span class="cstat-no" title="statement not covered" >await Leave.cancelLeave(Number(leaveId));</span>
@@ -268,7 +268,7 @@ export const cancelLeave = <span class="fstat-no" title="function not covered" >
 }
 };//update model to have  all the leavetypes
 &nbsp;
-export const approveLeave = <span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {  const { leaveId } = <span class="cstat-no" title="statement not covered" >req.body;</span>
+export const approveLeave = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request, res: Response) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {  c</span>onst { leaveId } = <span class="cstat-no" title="statement not covered" >req.body;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >try {</span>
   const result = <span class="cstat-no" title="statement not covered" >await Leave.updateLeaveStatus(leaveId, "Approved", "Approved by manager");</span>
@@ -278,7 +278,7 @@ export const approveLeave = <span class="fstat-no" title="function not covered" 
 <span class="cstat-no" title="statement not covered" >  res.status(500).json({ message: "Failed to approve leave" });</span>
 } };
 &nbsp;
-export const rejectLeave = <span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {  const { leaveId, reason } = <span class="cstat-no" title="statement not covered" >req.body;</span>
+export const rejectLeave = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request, res: Response) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {  c</span>onst { leaveId, reason } = <span class="cstat-no" title="statement not covered" >req.body;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >try {</span>
   const result = <span class="cstat-no" title="statement not covered" >await Leave.updateLeaveStatus(leaveId, "Rejected", reason || "No reason provided");</span>
@@ -288,7 +288,7 @@ export const rejectLeave = <span class="fstat-no" title="function not covered" >
 <span class="cstat-no" title="statement not covered" >  res.status(500).json({ message: "Failed to reject leave" });</span>
 } };
 &nbsp;
-export const getUserLeaveStatus = <span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; { const { userId } = <span class="cstat-no" title="statement not covered" >req.params;</span>
+export const getUserLeaveStatus = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request, res: Response) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > { c</span>onst { userId } = <span class="cstat-no" title="statement not covered" >req.params;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >try {</span>
   const result = <span class="cstat-no" title="statement not covered" >await Leave.getLeaveRequestsByUserId(Number(userId));</span>
@@ -298,7 +298,7 @@ export const getUserLeaveStatus = <span class="fstat-no" title="function not cov
 <span class="cstat-no" title="statement not covered" >  res.status(500).json({ message: "Failed to fetch leave status" });</span>
 } };
 &nbsp;
-export const getRemainingLeave = <span class="fstat-no" title="function not covered" >async </span>(req: Request, res: Response) =&gt; {  const { userId } = <span class="cstat-no" title="statement not covered" >req.params;</span>
+export const getRemainingLeave = <span class="fstat-no" title="function not covered" >async (r</span>eq: Request, res: Response) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {  c</span>onst { userId } = <span class="cstat-no" title="statement not covered" >req.params;</span></span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >try {</span>
   const remaining = <span class="cstat-no" title="statement not covered" >await Leave.getRemainingLeaveDays(Number(userId));</span>
@@ -313,7 +313,7 @@ export const getRemainingLeave = <span class="fstat-no" title="function not cove
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-24T12:01:20.399Z
+                at 2025-04-24T16:11:20.779Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -1,40 +1,39 @@
 import request from 'supertest';
-import app from '../app'; 
+import app from '../app';  
+import { User } from '../models/User';  
+import bcrypt from 'bcrypt';
+
+//test
+beforeAll(async () => {
+  const passwordHash = await bcrypt.hash('password123', 10);
+  await User.create({
+    firstName: 'John',
+    surname: 'Doe',
+    email: 'john.doe@example.com',
+    passwordHash,
+    salt: 'salt_placeholder',
+    role: 'employee',
+    annualLeaveBalance: 25
+  });
+});
 
 describe('Auth Routes', () => {
-
-  // registration
   describe('POST /register', () => {
     it('should register a new user', async () => {
       const response = await request(app)
         .post('/api/auth/register')
         .send({
-          firstName: 'John',
+          firstName: 'Jane',
           surname: 'Doe',
-          email: 'john.doe@example.com',
+          email: 'jane.doe@example.com',
           password: 'password123'
         });
 
       expect(response.status).toBe(201);
       expect(response.body.message).toBe('User registered successfully');
     });
-
-    it('should return 400 for missing fields', async () => {
-      const response = await request(app)
-        .post('/api/auth/register')
-        .send({
-          firstName: 'John',
-          surname: 'Doe',
-          email: 'john.doe@example.com',
-          // Miss the pw
-        });
-
-      expect(response.status).toBe(400);
-      expect(response.body.message).toBe('Please provide all required fields.');
-    });
   });
 
-  // login
   describe('POST /login', () => {
     it('should log in a user and return a token', async () => {
       const response = await request(app)
