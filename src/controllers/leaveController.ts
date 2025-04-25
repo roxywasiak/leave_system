@@ -76,7 +76,13 @@ export const cancelLeave = async (req: Request & { params: { leaveId: string } }
 };
 
 // Approve leave
-export const approveLeave = async (req: Request & { leaveId: string; userId: number;} , res: Response) => {
+interface ApproveLeaveRequestBody {
+  user: any;
+  leaveId: string;
+  userId: number;
+}
+
+export const approveLeave = async (req: Request & { body: ApproveLeaveRequestBody }, res: Response) => {
   const { leaveId, userId } = req.body;  // UserId should be the id of the employee making the leave request
   const loggedInUserId = req.body.user?.userId; // Assuming the logged-in user's ID is in the request body
 
