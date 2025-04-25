@@ -63,7 +63,15 @@ export const login: RequestHandler<{}, {}, LoginRequestBody> = async (req, res):
 };
 
 // Register function
-export const register = async (req: Request, res: Response): Promise<void> => {
+interface RegisterRequestBody {
+  email: string;
+  password: string;
+  department: string;
+  firstName: string;
+  surname: string;
+}
+
+export const register = async (req: Request<{}, {}, RegisterRequestBody>, res: Response): Promise<void> => {
   try {
     const { email, password, department, firstName, surname } = req.body;  
 

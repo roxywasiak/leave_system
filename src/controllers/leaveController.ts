@@ -75,8 +75,7 @@ export const requestLeave: RequestHandler<{}, {}, CreateLeaveRequestBody> = asyn
 
 // Cancel leave
 export const cancelLeave = async (req: Request<CancelLeaveParams>, res: Response) => {
-  const { leaveId } = req.params; 
-;
+  const { leaveId } = req.params;
 
   try {
     const result = await Leave.cancelLeave(Number(leaveId));
@@ -90,7 +89,7 @@ export const cancelLeave = async (req: Request<CancelLeaveParams>, res: Response
 // Approve leave
 export const approveLeave = async (req: Request & { body: { leaveId: string; userId: number } }, res: Response) => {
   const { leaveId, userId } = req.body;  // UserId should be the id of the employee making the leave request
-  const loggedInUserId = req.body; // This will now work as the user property is added to the Request type
+  const loggedInUserId = req.body.loggedInUserId; 
 
   if (!loggedInUserId) {
      res.status(401).json({ message: "Unauthorized. No logged-in user." });

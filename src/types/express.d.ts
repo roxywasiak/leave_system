@@ -5,7 +5,12 @@ declare global {
     interface Request extends ExpressRequest {
       body: any; 
       params: {[key:string]: string | undefined}; 
-      user?: any; 
+      user?: {
+        userId: number;
+        email: string;
+        role: string;     
+        firstName: string;        
+        surname: string;}
     }
   }
 }
