@@ -71,7 +71,7 @@ interface RegisterRequestBody {
   surname: string;
 }
 
-export const register = async (req: Request<{}, {}, RegisterRequestBody>, res: Response): Promise<void> => {
+export const register: RequestHandler<{}, {}, RegisterRequestBody> = async (req, res): Promise<void> => {
   try {
     const { email, password, department, firstName, surname } = req.body;  
 

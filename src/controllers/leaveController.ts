@@ -12,17 +12,6 @@ interface CreateLeaveRequestBody {
   reason: string;
 }
 
-interface LeaveRequest {
-  leaveId: number;
-  userId: number;
-  leaveTypeId: number;
-  startDate: Date;
-  endDate: Date;
-  status: string;
-  reason?: string;
-
-}
-
 interface CancelLeaveParams {
   leaveId: string;
 }
