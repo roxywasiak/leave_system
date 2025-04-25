@@ -1,5 +1,5 @@
 import { Request, Response, RequestHandler } from "express";
-import "../types/express"; // Ensure the custom type augmentation is imported
+import "..//types/express"; // Ensure the custom type augmentation is imported
 import { Leave } from "../models/Leave";
 import pool from "../config/db"; 
 import { ResultSetHeader, QueryResult } from "mysql2";
@@ -76,7 +76,7 @@ export const cancelLeave = async (req: Request & { params: { leaveId: string } }
 };
 
 // Approve leave
-export const approveLeave = async (req: Request & { body: { leaveId: string; userId: number } }, res: Response) => {
+export const approveLeave = async (req: Request & { body: { leaveId: string; userId: number; user?: { userId: number } } }, res: Response) => {
   const { leaveId, userId } = req.body;  // UserId should be the id of the employee making the leave request
   const loggedInUserId = req.body.user?.userId; // Assuming the logged-in user's ID is in the request body
 
@@ -132,7 +132,7 @@ export const getUserLeaveStatus = async (req: Request & { params: { userId: stri
 };
 
 // Get remaining leave
-export const getRemainingLeave = async (req: Request<{ userId: string }>, res: Response) => {
+export const getRemainingLeave = async (req: Request & { params: { userId: string } }, res: Response) => {
   const { userId } = req.params;
 
   try {
