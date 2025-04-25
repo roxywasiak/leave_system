@@ -1,14 +1,40 @@
-import { Request, Response } from "express";
+import { Request, Response, RequestHandler } from "express";
+import "../types/express"; // Ensure the custom type augmentation is imported
 import { Leave } from "../models/Leave";
 import pool from "../config/db"; 
+import { ResultSetHeader, QueryResult } from "mysql2";
+
+interface CreateLeaveRequestBody {
+  userId: number;
+  leaveTypeId: number;
+  startDate: string;
+  endDate: string;
+  reason: string;
+}
+
+interface LeaveRequest {
+  leaveId: number;
+  userId: number;
+  leaveTypeId: number;
+  startDate: Date;
+  endDate: Date;
+  status: string;
+  reason?: string;
+
+}
+
+interface CancelLeaveParams {
+  leaveId: string;
+}
 
 // Helper function to check if the logged-in user is a manager of the leave requester
 const isManagerOfUser = async (managerId: number, userId: number): Promise<boolean> => {
   const query = 'SELECT * FROM usermanagement WHERE userId = ? AND managerId = ?';
-  const [rows] = await pool.execute(query, [userId, managerId]);
-  return rows.length > 0;  // Return true if managerId matches the userId relationship
+  const [rows]: [QueryResult, any] = await pool.execute(query, [userId, managerId]);
+  return (rows as any[]).length > 0;  // Process rows safely
 };
 
+// Get all leave requests
 export const getAllLeaveRequests = async (req: Request, res: Response) => {
   try {
     const leaves = await Leave.getAllLeaveRequests();
@@ -19,11 +45,13 @@ export const getAllLeaveRequests = async (req: Request, res: Response) => {
   }
 };
 
-export const requestLeave = async (req: Request, res: Response) => {
+// Request leave
+export const requestLeave: RequestHandler<{}, {}, CreateLeaveRequestBody> = async (req, res) => {
   const { userId, leaveTypeId, startDate, endDate, reason } = req.body;
 
   if (!userId || !leaveTypeId || !startDate || !endDate) {
-    return res.status(400).json({ message: "Missing required fields" });
+   res.status(400).json({ message: "Missing required fields" });
+   return;
   }
 
   try {
@@ -45,8 +73,10 @@ export const requestLeave = async (req: Request, res: Response) => {
   }
 };
 
-export const cancelLeave = async (req: Request, res: Response) => {
-  const { leaveId } = req.params;
+// Cancel leave
+export const cancelLeave = async (req: Request<CancelLeaveParams>, res: Response) => {
+  const { leaveId } = req.params; 
+;
 
   try {
     const result = await Leave.cancelLeave(Number(leaveId));
@@ -57,9 +87,15 @@ export const cancelLeave = async (req: Request, res: Response) => {
   }
 };
 
-export const approveLeave = async (req: Request, res: Response) => {
-  const { leaveId, userId } = req.body; // UserId should be the id of the employee making the leave request
-  const loggedInUserId = req.user.userId; //is the manager logged in/ their id is available in req.user
+// Approve leave
+export const approveLeave = async (req: Request & { body: { leaveId: string; userId: number } }, res: Response) => {
+  const { leaveId, userId } = req.body;  // UserId should be the id of the employee making the leave request
+  const loggedInUserId = req.body; // This will now work as the user property is added to the Request type
+
+  if (!loggedInUserId) {
+     res.status(401).json({ message: "Unauthorized. No logged-in user." });
+     return;
+  }
 
   // Check if the logged-in user is the manager of the user making the leave request
   const isManager = await isManagerOfUser(loggedInUserId, userId);
@@ -68,19 +104,25 @@ export const approveLeave = async (req: Request, res: Response) => {
   }
 
   try {
-    const result = await Leave.updateLeaveStatus(leaveId, "Approved", "Approved by manager");
-    res.status(200).json({ message: `Leave ${leaveId} approved`, result });
+    const result: ResultSetHeader = await Leave.updateLeaveStatus(Number(leaveId), "Approved", "Approved by manager");
+    if (result.affectedRows === 0) {
+      res.status(404).json({ message: `Leave ${leaveId} not found` });
+    } else {
+      res.status(200).json({ message: `Leave ${leaveId} approved`, result });
+    }
   } catch (err) {
     console.error("Error approving leave:", err);
     res.status(500).json({ message: "Failed to approve leave" });
+    return;
   }
 };
 
-export const rejectLeave = async (req: Request, res: Response) => {
+// Reject leave
+export const rejectLeave = async (req: Request & { body: { leaveId: string; reason: string } }, res: Response) => {
   const { leaveId, reason } = req.body;
 
   try {
-    const result = await Leave.updateLeaveStatus(leaveId, "Rejected", reason || "No reason provided");
+    const result = await Leave.updateLeaveStatus(Number(leaveId), "Rejected", reason || "No reason provided");
     res.status(200).json({ message: `Leave ${leaveId} rejected`, result });
   } catch (err) {
     console.error("Error rejecting leave:", err);
@@ -88,7 +130,8 @@ export const rejectLeave = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserLeaveStatus = async (req: Request, res: Response) => {
+// Get user leave status
+export const getUserLeaveStatus = async (req: Request<{ userId: string }>, res: Response) => {
   const { userId } = req.params;
 
   try {
@@ -100,7 +143,8 @@ export const getUserLeaveStatus = async (req: Request, res: Response) => {
   }
 };
 
-export const getRemainingLeave = async (req: Request, res: Response) => {
+// Get remaining leave
+export const getRemainingLeave = async (req: Request<{ userId: string }>, res: Response) => {
   const { userId } = req.params;
 
   try {
