@@ -69,7 +69,11 @@ exports.cancelLeave = cancelLeave;
 // Approve leave
 const approveLeave = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { leaveId, userId } = req.body; // UserId should be the id of the employee making the leave request
-    const loggedInUserId = req.body.loggedInUserId;
+    const loggedInUserId = req.user; // Assuming req.User is populated by a middleware with the logged-in user's info
+    if (!loggedInUserId) {
+        res.status(401).json({ message: "Unauthorized. No logged-in user." });
+        return;
+    }
     if (!loggedInUserId) {
         res.status(401).json({ message: "Unauthorized. No logged-in user." });
         return;
@@ -77,7 +81,7 @@ const approveLeave = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     // Check if the logged-in user is the manager of the user making the leave request
     const isManager = yield isManagerOfUser(loggedInUserId, userId);
     if (!isManager) {
-        return res.status(403).json({ message: "Access denied. You are not the manager of this user." });
+        res.status(403).json({ message: "Access denied. You are not the manager of this user." });
     }
     try {
         const result = yield Leave_1.Leave.updateLeaveStatus(Number(leaveId), "Approved", "Approved by manager");

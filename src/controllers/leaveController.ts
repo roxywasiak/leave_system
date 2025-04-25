@@ -63,7 +63,7 @@ export const requestLeave: RequestHandler<{}, {}, CreateLeaveRequestBody> = asyn
 };
 
 // Cancel leave
-export const cancelLeave = async (req: Request<CancelLeaveParams>, res: Response) => {
+export const cancelLeave = async (req: Request & { params: { leaveId: string } }, res: Response) => {
   const { leaveId } = req.params;
 
   try {
@@ -78,7 +78,7 @@ export const cancelLeave = async (req: Request<CancelLeaveParams>, res: Response
 // Approve leave
 export const approveLeave = async (req: Request & { body: { leaveId: string; userId: number } }, res: Response) => {
   const { leaveId, userId } = req.body;  // UserId should be the id of the employee making the leave request
-  const loggedInUserId = req.body.loggedInUserId; 
+  const loggedInUserId = req.body.user?.userId; // Assuming the logged-in user's ID is in the request body
 
   if (!loggedInUserId) {
      res.status(401).json({ message: "Unauthorized. No logged-in user." });
@@ -119,7 +119,7 @@ export const rejectLeave = async (req: Request & { body: { leaveId: string; reas
 };
 
 // Get user leave status
-export const getUserLeaveStatus = async (req: Request<{ userId: string }>, res: Response) => {
+export const getUserLeaveStatus = async (req: Request & { params: { userId: string } }, res: Response) => {
   const { userId } = req.params;
 
   try {
