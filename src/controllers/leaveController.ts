@@ -82,23 +82,25 @@ interface ApproveLeaveRequestBody {
   userId: number;
 }
 
-export const approveLeave = async (req: Request & { body: ApproveLeaveRequestBody }, res: Response) => {
-  const { leaveId, userId } = req.body;  // UserId should be the id of the employee making the leave request
+export const approveLeave: RequestHandler<{}, {}, ApproveLeaveRequestBody> = async (req, res) => {
+  const { leaveId, userId } = req.body; // UserId should be the id of the employee making the leave request
   const loggedInUserId = req.body.user?.userId; // Assuming the logged-in user's ID is in the request body
 
   if (!loggedInUserId) {
-     res.status(401).json({ message: "Unauthorized. No logged-in user." });
-     return;
-  }
-
-  // Check if the logged-in user is the manager of the user making the leave request
-  const isManager = await isManagerOfUser(loggedInUserId, userId);
-  if (!isManager) {
-    return res.status(403).json({ message: "Access denied. You are not the manager of this user." });
+    res.status(401).json({ message: "Unauthorized. No logged-in user." });
+    return;
   }
 
   try {
+    // Check if the logged-in user is the manager of the user making the leave request
+    const isManager = await isManagerOfUser(loggedInUserId, userId);
+    if (!isManager) {
+      res.status(403).json({ message: "Access denied. You are not the manager of this user." });
+      return;
+    }
+
     const result: ResultSetHeader = await Leave.updateLeaveStatus(Number(leaveId), "Approved", "Approved by manager");
+
     if (result.affectedRows === 0) {
       res.status(404).json({ message: `Leave ${leaveId} not found` });
     } else {
@@ -107,9 +109,9 @@ export const approveLeave = async (req: Request & { body: ApproveLeaveRequestBod
   } catch (err) {
     console.error("Error approving leave:", err);
     res.status(500).json({ message: "Failed to approve leave" });
-    return;
   }
 };
+
 
 // Reject leave
 export const rejectLeave = async (req: Request & { body: { leaveId: string; reason: string } }, res: Response) => {
