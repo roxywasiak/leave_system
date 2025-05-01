@@ -1,8 +1,8 @@
-import { Request as ExpressRequest } from 'express';
+import 'express';
 
 declare global {
   namespace Express {
-    interface Request extends ExpressRequest {
+    interface Request {
       user?: {
         userId: number;
         email: string;
