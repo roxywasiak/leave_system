@@ -9,7 +9,7 @@ declare global {
         role: string;     
         firstName: string;        
         surname: string;}
-      body: any; 
+      // body: any; 
       params: {[key:string]: string | undefined}; 
       
     }
